@@ -1293,11 +1293,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         case LONG_PRESS_POWER_NOTHING:
             break;
         case LONG_PRESS_POWER_GLOBAL_ACTIONS:
-            mPowerKeyHandled = true;
-            if (!performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false)) {
-                performAuditoryFeedbackForAccessibilityIfNeed();
+            ContentResolver resolver = mContext.getContentResolver();
+            int powerLongPress = Settings.Secure.getInt(resolver,
+                    Settings.Secure.LOCKSCREEN_POWER_MENU_ENABLED, 0);
+            if (powerLongPress == 1 && isKeyguardShowingAndNotOccluded()) {
+                Toast.makeText(mContext, "Power longpress disabled", Toast.LENGTH_LONG).show();
+            } else {
+                mPowerKeyHandled = true;
+                if (!performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false)) {
+                    performAuditoryFeedbackForAccessibilityIfNeed();
+                }
+                showGlobalActionsInternal();
             }
-            showGlobalActionsInternal();
             break;
         case LONG_PRESS_POWER_SHUT_OFF:
         case LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM:
