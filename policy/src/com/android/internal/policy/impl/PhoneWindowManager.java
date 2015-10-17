@@ -1296,9 +1296,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             ContentResolver resolver = mContext.getContentResolver();
             int powerLongPress = Settings.Secure.getInt(resolver,
                     Settings.Secure.LOCKSCREEN_POWER_MENU_ENABLED, 0);
-            if (powerLongPress == 1 && isKeyguardShowingAndNotOccluded()) {
-                Toast.makeText(mContext, "Power longpress disabled", Toast.LENGTH_LONG).show();
-            } else {
+            if (!isKeyguardShowingAndNotOccluded() || powerLongPress == 0){
                 mPowerKeyHandled = true;
                 if (!performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false)) {
                     performAuditoryFeedbackForAccessibilityIfNeed();
